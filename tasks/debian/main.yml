@@ -4,6 +4,23 @@
 # Task file to install Oracle Java Development Kit in a system with a Debian based Linux distribution.
 #
 
+# TODO replace x64 with i586 on is 32-bit system
+- name: check if jdk has been downloaded
+  stat: "path=jdk-{{ oracle_java_version_u_update }}-linux-x64.tar.gz"
+  register: jdk_downloaded
+
+- name: create jdk install directory
+  file: path=/var/cache/oracle-jdk{{ oracle_java_version }}-installer state=directory
+  become: yes
+  when: jdk_downloaded.stat.exists == True
+
+- name: copy downloaded jdk to install directory
+  copy:
+    src: "jdk-{{ oracle_java_version_u_update }}-linux-x64.tar.gz"
+    dest: "/var/cache/oracle-jdk{{ oracle_java_version }}-installer/jdk-{{ oracle_java_version_u_update }}-linux-x64.tar.gz"
+  become: yes
+  when: jdk_downloaded.stat.exists == True
+
 - name: accept Oracle license
   shell: "echo oracle-java{{ oracle_java_version }}-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections"
   changed_when: no
