@@ -35,5 +35,5 @@
   sudo: yes
 
 - name: in case there were changes, check host environment again
-  include: ../check_environment.yml
+  include: check_environment.yml
 

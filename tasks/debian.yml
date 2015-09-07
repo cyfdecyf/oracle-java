@@ -6,7 +6,7 @@
 
 # TODO replace x64 with i586 on is 32-bit system
 - name: check if jdk has been downloaded
-  stat: "path=jdk-{{ oracle_java_version_u_update }}-linux-x64.tar.gz"
+  local_action: stat "path={{ role_path }}/files/jdk-{{ oracle_java_version_u_update }}-linux-x64.tar.gz"
   register: jdk_downloaded
 
 - name: create jdk install directory
@@ -43,5 +43,8 @@
   sudo: yes
 
 - name: in case there were changes, check host environment again
-  include: ../check_environment.yml
+  include: check_environment.yml
   when: oracle_java_task_apt_install|changed or oracle_java_task_set_default|changed
+
+# TODO remove /var/cache/oracle-jdk{{ oracle_java_version }}-installer
+# But how to avoid repeat copy if we re-run this role?
